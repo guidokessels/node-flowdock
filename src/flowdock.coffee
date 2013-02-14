@@ -42,9 +42,17 @@ class Session extends process.EventEmitter
     Stream.connect @auth, flows, options
 
   # Send message to flowdock
+  # 
+  # flow - Either a flow name (String <subdomain>:<flow>) or a user id (Number)
+  # message - The message to send
+  # callback - Optional callback function
   send: (flow, message, callback) ->
     uri = baseURL()
-    uri.path = "/flows/#{flow.replace ':', '/'}/messages"
+
+    if 'number' is typeof flow
+      uri.path = "/private/#{flow}/messages" 
+    else
+      uri.path = "/flows/#{flow.replace ':', '/'}/messages"
 
     options =
       uri: uri
